@@ -120,6 +120,71 @@ npm run dev
 
 ---
 
+## Localhost Development
+
+This project includes a setup script to help you get started quickly. The script checks for required dependencies (Python, Node.js, uv) and sets up both backend and frontend.
+
+### Prerequisites
+
+- Bash shell (Linux, macOS, WSL, or Git Bash on Windows)
+- For Windows: WSL (Windows Subsystem for Linux) or Git Bash
+
+### Quick Start
+
+Run the following command to set up and start both backend and frontend:
+
+```bash
+./setup.sh setup
+```
+
+### Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `./setup.sh setup` | Set up entire project (backend + frontend) |
+| `./setup.sh setup-backend` | Set up backend only |
+| `./setup.sh setup-frontend` | Set up frontend only |
+| `./setup.sh start-backend` | Start backend server |
+| `./setup.sh start-frontend` | Start frontend server |
+| `./setup.sh start-all` | Start both servers |
+| `./setup.sh help` | Show help message |
+
+### What the Setup Does
+
+**Backend:**
+1. Checks Python version (reads from backend/.python-version)
+2. Installs Python if not present
+3. Installs uv package manager
+4. Installs Python dependencies with `uv sync`
+5. Creates admin user interactively
+6. Starts backend server on port 8003
+
+**Frontend:**
+1. Checks Node.js installation
+2. Installs npm dependencies
+3. Starts frontend development server
+
+### Manual Setup (Alternative)
+
+If you prefer to set up manually:
+
+**Backend:**
+```bash
+cd backend
+uv sync
+uv run python -m app.scripts.create_admin interactive
+uv run python main.py
+```
+
+**Frontend:**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
 ## Admin Guide
 
 ### Creating an Admin User
