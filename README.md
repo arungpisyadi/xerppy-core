@@ -122,23 +122,32 @@ npm run dev
 
 ## Localhost Development
 
-This project includes a setup script to help you get started quickly. The script checks for required dependencies (Python, Node.js, uv) and sets up both backend and frontend.
+This project includes setup scripts to help you get started quickly. The scripts check for required dependencies (Python, Node.js, uv) and set up both backend and frontend.
 
 ### Prerequisites
 
+**For Linux/macOS/WS2:**
 - Bash shell (Linux, macOS, WSL, or Git Bash on Windows)
-- For Windows: WSL (Windows Subsystem for Linux) or Git Bash
+
+**For Windows (Native):**
+- PowerShell 7+ (download from https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows)
+- Run in PowerShell 7+ terminal: `pwsh.exe`
 
 ### Quick Start
 
-Run the following command to set up and start both backend and frontend:
-
+**Linux/macOS/WS2/Git Bash:**
 ```bash
 ./setup.sh setup
 ```
 
+**Windows (PowerShell 7+):**
+```powershell
+pwsh.exe .\setup.ps1 setup
+```
+
 ### Available Commands
 
+**Bash (Linux/macOS/WS2/Git Bash):**
 | Command | Description |
 |---------|-------------|
 | `./setup.sh setup` | Set up entire project (backend + frontend) |
@@ -148,6 +157,17 @@ Run the following command to set up and start both backend and frontend:
 | `./setup.sh start-frontend` | Start frontend server |
 | `./setup.sh start-all` | Start both servers |
 | `./setup.sh help` | Show help message |
+
+**PowerShell (Windows):**
+| Command | Description |
+|---------|-------------|
+| `.\setup.ps1 setup` | Set up entire project (backend + frontend) |
+| `.\setup.ps1 setup-backend` | Set up backend only |
+| `.\setup.ps1 setup-frontend` | Set up frontend only |
+| `.\setup.ps1 start-backend` | Start backend server |
+| `.\setup.ps1 start-frontend` | Start frontend server |
+| `.\setup.ps1 start-all` | Start both servers |
+| `.\setup.ps1 help` | Show help message |
 
 ### What the Setup Does
 
