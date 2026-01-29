@@ -87,13 +87,13 @@ Xerppy follows a **Modular Monolith** architecture:
 cd backend
 
 # Install dependencies with uv
-uv sync
+uv sync --active
 
 # Create admin user
-uv run python -m app.scripts.create_admin interactive
+uv run --active python -m app.scripts.create_admin interactive
 
 # Start development server
-uv run python main.py
+uv run --active python main.py
 ```
 
 ### Frontend Setup
@@ -191,9 +191,9 @@ If you prefer to set up manually:
 **Backend:**
 ```bash
 cd backend
-uv sync
-uv run python -m app.scripts.create_admin interactive
-uv run python main.py
+uv sync --active
+uv run --active python -m app.scripts.create_admin interactive
+uv run --active python main.py
 ```
 
 **Frontend:**
@@ -215,7 +215,7 @@ Xerppy includes an interactive CLI script for admin user creation.
 
 ```bash
 cd backend
-uv run python -m app.scripts.create_admin interactive
+uv run --active python -m app.scripts.create_admin interactive
 ```
 
 This will prompt you for:
@@ -227,7 +227,7 @@ This will prompt you for:
 
 ```bash
 cd backend
-uv run python -m app.scripts.create_admin --username admin --email admin@example.com --password yourpassword
+uv run --active python -m app.scripts.create_admin --username admin --email admin@example.com --password yourpassword
 ```
 
 ### Default Roles
@@ -509,10 +509,10 @@ DATABASE_URL="postgresql+asyncpg://user:password@localhost:5432/xerppy"
 ```bash
 # Backend tests
 cd backend
-uv run pytest
+uv run --active pytest
 
 # Backend tests with coverage
-uv run pytest --cov=app
+uv run --active pytest --cov=app
 
 # Frontend tests
 cd frontend
@@ -524,13 +524,13 @@ npm run test
 ```bash
 # Create new migration
 cd backend
-uv run alembic revision -m "description"
+uv run --active alembic revision -m "description"
 
 # Apply migrations
-uv run alembic upgrade head
+uv run --active alembic upgrade head
 
 # Check current revision
-uv run alembic current
+uv run --active alembic current
 ```
 
 ### Linting and Formatting
@@ -538,8 +538,8 @@ uv run alembic current
 ```bash
 # Backend (ruff)
 cd backend
-uv run ruff check .
-uv run ruff format .
+uv run --active ruff check .
+uv run --active ruff format .
 
 # Frontend (eslint)
 cd frontend
@@ -551,7 +551,7 @@ npm run lint:fix
 
 ```bash
 # Reset database and seed roles
-uv run python -m app.scripts.create_admin --force
+uv run --active python -m app.scripts.create_admin --force
 ```
 
 ---
