@@ -1,10 +1,27 @@
 """Authentication service with JWT and password hashing"""
+import os
+
+# Workaround for passlib's detect_wrap_bug function which uses a 88-byte test password
+# that exceeds bcrypt's 72-byte limit in bcrypt 4.x+
+# This MUST be set BEFORE importing passlib
+os.environ['PASSLIB_BUG_DETECTOR'] = '0'
+
+import bcrypt
+
+# Workaround for bcrypt 5.x compatibility with passlib
+# bcrypt 5.x removed __about__.__version__ which passlib tries to access
+# This MUST be applied BEFORE importing passlib
+if not hasattr(bcrypt, '__about__'):
+    bcrypt.__about__ = type('AboutModule', (), {'__version__': bcrypt.__version__})()
+
 from datetime import datetime, timedelta
 from typing import Optional
 
 from jose import JWTError, jwt
 from passlib.context import CryptContext
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.config.settings import settings
 from app.modules.auth.models import User, Role
@@ -13,6 +30,9 @@ from app.modules.auth.schemas import UserCreate, Token, TokenData
 
 # Password hashing context
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# Maximum password length for bcrypt
+BCRYPT_MAX_PASSWORD_LENGTH = 72
 
 
 class AuthService:
@@ -26,6 +46,11 @@ class AuthService:
     @staticmethod
     def get_password_hash(password: str) -> str:
         """Hash a password"""
+        # Truncate password to 72 bytes (bcrypt maximum)
+        password_bytes = password.encode('utf-8')
+        if len(password_bytes) > BCRYPT_MAX_PASSWORD_LENGTH:
+            password_bytes = password_bytes[:BCRYPT_MAX_PASSWORD_LENGTH]
+            password = password_bytes.decode('utf-8', errors='ignore')
         return pwd_context.hash(password)
     
     @staticmethod
@@ -127,10 +152,16 @@ class AuthService:
         await role_repo.seed_defaults()
         
         # Assign all permissions to admin role
-        admin_role = await role_repo.get_by_name("admin")
+        # Use selectinload to eagerly load permissions relationship
+        stmt = select(Role).where(Role.name == "admin").options(selectinload(Role.permissions))
+        result = await session.execute(stmt)
+        admin_role = result.scalar_one_or_none()
         if admin_role:
             all_perms = await perm_repo.get_all()
-            admin_role.permissions.extend(all_perms)
+            # Filter out permissions that already exist to prevent duplicates
+            existing_perm_ids = {perm.id for perm in admin_role.permissions}
+            new_perms = [perm for perm in all_perms if perm.id not in existing_perm_ids]
+            admin_role.permissions.extend(new_perms)
             await session.commit()
     
     @staticmethod

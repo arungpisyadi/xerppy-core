@@ -17,7 +17,7 @@ A Laravel-like FastAPI starter kit with modular monolith architecture, featuring
 
 ## Project Overview
 
-Xerppy is a production-ready FastAPI starter kit inspired by Laravel's architecture patterns. It provides a solid foundation for building modular, scalable web applications with AI capabilities powered by CrewAI.
+Xerppy is a production-ready FastAPI based ERP system starter kit inspired by Laravel's architecture patterns. It provides a solid foundation for building modular, scalable web applications with AI capabilities powered by CrewAI.
 
 ### What is Xerppy?
 
@@ -33,7 +33,7 @@ Xerppy is designed to bridge the gap between Python's powerful ecosystem and Lar
 | Layer | Technology |
 |-------|------------|
 | Backend | FastAPI 0.109+, Python 3.11+ |
-| Database | SQLAlchemy 2.0 (Async) with SQLite/Alembic |
+| Database | SQLAlchemy 2.0 (Async) with SQLite/Alembic, MySQL/Alembic, and PostgreSQL/Alembic |
 | Auth | JWT with password hashing (Passlib) |
 | AI | CrewAI 0.30+ with agent workflows |
 | Frontend | React 18 with TypeScript + Vite |
