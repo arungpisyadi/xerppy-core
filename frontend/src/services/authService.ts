@@ -33,11 +33,11 @@ class AuthService {
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.detail || 'Login failed');
+      const error = (await response.json()) as { detail?: string };
+      throw new Error(error.detail ?? 'Login failed');
     }
 
-    const data: TokenResponse = await response.json();
+    const data = (await response.json()) as TokenResponse;
     
     // Store token
     localStorage.setItem(this.tokenKey, data.access_token);
@@ -77,7 +77,7 @@ class AuthService {
       throw new Error('Failed to get user');
     }
 
-    const user: User = await response.json();
+    const user = (await response.json()) as User;
     localStorage.setItem(this.userKey, JSON.stringify(user));
     
     return user;
@@ -90,7 +90,7 @@ class AuthService {
     const userStr = localStorage.getItem(this.userKey);
     if (userStr) {
       try {
-        return JSON.parse(userStr);
+        return JSON.parse(userStr) as User;
       } catch {
         return null;
       }
@@ -125,8 +125,8 @@ class AuthService {
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.detail || 'Registration failed');
+      const error = (await response.json()) as { detail?: string };
+      throw new Error(error.detail ?? 'Registration failed');
     }
 
     // Auto login after registration

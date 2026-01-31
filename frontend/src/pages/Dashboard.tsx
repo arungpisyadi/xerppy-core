@@ -1,5 +1,5 @@
 /** Dashboard Page - Protected Route */
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -54,7 +54,7 @@ export default function Dashboard() {
               </p>
               <p className="text-gray-600">
                 <span className="font-medium">Roles:</span>{' '}
-                {user?.roles?.map((role) => (
+                {user?.roles.map((role) => (
                   <span
                     key={role}
                     className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs ml-1"

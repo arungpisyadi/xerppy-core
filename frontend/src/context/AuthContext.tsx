@@ -1,5 +1,5 @@
 /** Authentication Context for React */
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useState, useEffect, ReactNode } from 'react';
 import { authService, User } from '../services/authService';
 
 interface AuthContextType {
@@ -43,7 +43,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setIsLoading(false);
     };
 
-    initAuth();
+    void initAuth();
   }, []);
 
   const login = async (username: string, password: string) => {
@@ -84,12 +84,5 @@ export function AuthProvider({ children }: AuthProviderProps) {
   );
 }
 
-export function useAuth(): AuthContextType {
-  const context = useContext(AuthContext);
-  
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  
-  return context;
-}
+// Export context for use in useAuth hook
+export { AuthContext };
