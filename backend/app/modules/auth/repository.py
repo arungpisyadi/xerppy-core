@@ -1,8 +1,11 @@
 """Repository layer for auth operations"""
+import logging
 from typing import Optional, List
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
+
+logger = logging.getLogger(__name__)
 
 from app.modules.auth.models import User, Role, Permission
 
@@ -15,15 +18,28 @@ class UserRepository:
     
     async def get_by_username(self, username: str) -> Optional[User]:
         """Get user by username"""
-        stmt = select(User).where(User.username == username)
+        logger.debug(f"[REPO DEBUG] get_by_username called with username: {username}")
+        # Eagerly load roles to avoid lazy loading in async context
+        stmt = select(User).where(User.username == username).options(selectinload(User.roles))
+        logger.debug(f"[REPO DEBUG] SQL query: {stmt}")
         result = await self.session.execute(stmt)
-        return result.scalar_one_or_none()
+        user = result.scalar_one_or_none()
+        if user:
+            logger.debug(f"[REPO DEBUG] User found - id: {user.id}, username: {user.username}, email: {user.email}")
+            logger.debug(f"[REPO DEBUG] User roles count: {len(user.roles) if user.roles else 0}")
+        else:
+            logger.warning(f"[REPO DEBUG] User NOT found for username: {username}")
+        return user
     
     async def get_by_email(self, email: str) -> Optional[User]:
         """Get user by email"""
-        stmt = select(User).where(User.email == email)
+        # Eagerly load roles to avoid lazy loading in async context
+        stmt = select(User).where(User.email == email).options(selectinload(User.roles))
         result = await self.session.execute(stmt)
-        return result.scalar_one_or_none()
+        user = result.scalar_one_or_none()
+        if user:
+            logger.debug(f"[REPO DEBUG] User roles count: {len(user.roles) if user.roles else 0}")
+        return user
     
     async def get_by_id(self, user_id: int) -> Optional[User]:
         """Get user by ID"""

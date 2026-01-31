@@ -1,7 +1,11 @@
 """Authentication API router"""
+import logging
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
+
+# Setup logging
+logger = logging.getLogger(__name__)
 
 from app.db.connection import get_db
 from app.modules.auth.models import User
@@ -104,11 +108,20 @@ async def login(
     session: AsyncSession = Depends(get_db)
 ):
     """Login and get access token"""
+    # DEBUG: Log received login payload
+    logger.debug(f"[LOGIN DEBUG] Received login request - username: {login_data.username}, password_length: {len(login_data.password)}")
+    
     user = await AuthService.authenticate_user(
         session,
         login_data.username,
         login_data.password
     )
+    
+    # DEBUG: Log authentication result
+    if user:
+        logger.debug(f"[LOGIN DEBUG] User found - id: {user.id}, username: {user.username}, is_active: {user.is_active}")
+    else:
+        logger.warning(f"[LOGIN DEBUG] User NOT found for username: {login_data.username}")
     
     if not user:
         raise HTTPException(

@@ -1,5 +1,9 @@
 """Authentication service with JWT and password hashing"""
 import os
+import logging
+
+# Setup logging
+logger = logging.getLogger(__name__)
 
 # Workaround for passlib's detect_wrap_bug function which uses a 88-byte test password
 # that exceeds bcrypt's 72-byte limit in bcrypt 4.x+
@@ -41,7 +45,11 @@ class AuthService:
     @staticmethod
     def verify_password(plain_password: str, hashed_password: str) -> bool:
         """Verify a password against a hash"""
-        return pwd_context.verify(plain_password, hashed_password)
+        logger.debug(f"[SERVICE DEBUG] verify_password called - plain_password_length: {len(plain_password)}, hashed_password_length: {len(hashed_password)}")
+        logger.debug(f"[SERVICE DEBUG] hashed_password (first 20 chars): {hashed_password[:20]}...")
+        result = pwd_context.verify(plain_password, hashed_password)
+        logger.debug(f"[SERVICE DEBUG] verify_password result: {result}")
+        return result
     
     @staticmethod
     def get_password_hash(password: str) -> str:
@@ -94,13 +102,33 @@ class AuthService:
         username: str,
         password: str
     ) -> Optional[User]:
-        """Authenticate a user by username and password"""
+        """Authenticate a user by username or email and password"""
+        logger.debug(f"[SERVICE DEBUG] authenticate_user called - username: {username}, password_length: {len(password)}")
         user_repo = UserRepository(session)
+        
+        # First, try to find user by username
         user = await user_repo.get_by_username(username)
+        
+        # If not found by username, try to find by email
         if not user:
+            logger.debug(f"[SERVICE DEBUG] User not found by username, trying email lookup...")
+            user = await user_repo.get_by_email(username)
+            if user:
+                logger.debug(f"[SERVICE DEBUG] User found by email - id: {user.id}, username: {user.username}, email: {user.email}")
+        
+        if not user:
+            logger.warning(f"[SERVICE DEBUG] User not found for username/email: {username}")
             return None
+        
+        logger.debug(f"[SERVICE DEBUG] User found - id: {user.id}, username: {user.username}")
+        
+        # DEBUG: Log password hash details
+        logger.debug(f"[SERVICE DEBUG] Stored password hash (first 30 chars): {user.hashed_password[:30]}...")
+        
         if not AuthService.verify_password(password, user.hashed_password):
+            logger.warning(f"[SERVICE DEBUG] Password verification FAILED for user: {username}")
             return None
+        logger.debug(f"[SERVICE DEBUG] Password verification SUCCEEDED for user: {username}")
         return user
     
     @staticmethod
@@ -167,6 +195,9 @@ class AuthService:
     @staticmethod
     async def get_user_roles(session: AsyncSession, user: User) -> list[str]:
         """Get list of role names for a user"""
+        logger.debug(f"[SERVICE DEBUG] get_user_roles called for user id: {user.id}")
+        logger.debug(f"[SERVICE DEBUG] User roles: {user.roles}")
+        logger.debug(f"[SERVICE DEBUG] Roles count: {len(user.roles) if user.roles else 0}")
         return [role.name for role in user.roles]
     
     @staticmethod
