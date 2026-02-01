@@ -1,4 +1,4 @@
-# Xerppy - Laravel-like FastAPI Starter Kit
+# Xerppy - FastAPI + CrewAI + React Customizable ERP Starter Kit
 
 <div align="center">
 
@@ -7,7 +7,7 @@
 ![React](https://img.shields.io/badge/React-18-cyan)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-A Laravel-like FastAPI starter kit with modular monolith architecture, featuring CrewAI integration for AI-powered workflows.
+A Customizable ERP Starter Kit with modular monolith architecture. Featuring Python FastAPI, CrewAI integration for AI-agentic integration, React JS frontend (Tailwind CSS for styling), and Docker ready deployment.
 
 [Features](#features) • [Quickstart](#quickstart-guide) • [Admin Guide](#admin-guide) • [API Documentation](#api-endpoints) • [Production](#production-guide)
 
@@ -17,7 +17,7 @@ A Laravel-like FastAPI starter kit with modular monolith architecture, featuring
 
 ## Project Overview
 
-Xerppy is a production-ready FastAPI based ERP system starter kit inspired by Laravel's architecture patterns. It provides a solid foundation for building modular, scalable web applications with AI capabilities powered by CrewAI.
+Xerppy is a production-ready and customizable ERP system starter kit based on FastAPI and React. It provides a solid foundation for building modular, scalable web applications with AI Agentic integration powered by CrewAI.
 
 ### What is Xerppy?
 
@@ -192,6 +192,8 @@ If you prefer to set up manually:
 ```bash
 cd backend
 uv sync --active
+# Update your backend/.env
+alembic upgrade head
 uv run --active python -m app.scripts.create_admin interactive
 uv run --active python main.py
 ```
@@ -199,6 +201,7 @@ uv run --active python main.py
 **Frontend:**
 ```bash
 cd frontend
+# Update your frontend/.env
 npm install
 npm run dev
 ```
@@ -341,7 +344,7 @@ xerppy-core/
 
 ---
 
-## API Endpoints
+## Default and Ready API Endpoints
 
 ### Authentication
 
@@ -578,7 +581,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [FastAPI](https://fastapi.tiangolo.com/) - The web framework used
 - [CrewAI](https://www.crewai.com/) - AI agent framework
-- [Laravel](https://laravel.com/) - Architecture inspiration
 - [Vite](https://vitejs.dev/) - Frontend build tool
 
 ---
