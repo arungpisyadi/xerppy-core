@@ -33,7 +33,7 @@ export default function Dashboard() {
           <div className="bg-white rounded-xl shadow-md p-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Welcome!</h2>
             <p className="text-gray-600 mb-4">
-              You have successfully logged into the Xerppy application.
+              You have successfully logged into Xerppy!
             </p>
             <div className="flex items-center space-x-2">
               <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
