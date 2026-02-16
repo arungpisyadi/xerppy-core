@@ -1,590 +1,404 @@
-# Xerppy - FastAPI + CrewAI + React Customizable ERP Starter Kit
+# Xerppy ERP Framework
 
-<div align="center">
+Production-grade full-stack Python ERP framework built with Flask and React.
 
-![Xerppy](https://img.shields.io/badge/Xerppy-FastAPI%20Starter%20Kit-blue)
-![Python](https://img.shields.io/badge/Python-3.11-blue)
-![React](https://img.shields.io/badge/React-18-cyan)
-![License](https://img.shields.io/badge/License-MIT-green)
+## Overview
 
-A Customizable ERP Starter Kit with modular monolith architecture. Featuring Python FastAPI, CrewAI integration for AI-agentic integration, React JS frontend (Tailwind CSS for styling), and Docker ready deployment.
+Xerppy is a modular, production-ready ERP (Enterprise Resource Planning) framework designed for flexibility and scalability. It provides a solid foundation for building business applications with built-in support for authentication, database management, AI integration, and a powerful plugin system.
 
-[Features](#features) • [Quickstart](#quickstart-guide) • [Admin Guide](#admin-guide) • [API Documentation](#api-endpoints) • [Production](#production-guide)
+## Tech Stack
 
-</div>
+### Backend
+- **Python 3.12+** - Modern Python with type hints
+- **Flask 3.1.0** - Lightweight WSGI web application framework
+- **Flask-SQLAlchemy 3.1.1** - ORM integration
+- **Flask-Migrate 4.0.7** - Database migration management
+- **Flask-Login 0.6.3** - User session management
 
----
+### Frontend
+- **React 19** - UI library
+- **Vite 6.0** - Build tool
+- **Tailwind CSS v4** - Utility-first CSS framework
+- **React Router v7** - Client-side routing
+- **Axios** - HTTP client
 
-## Project Overview
+### Database
+- **MySQL 8.0** - Default database
+- **PostgreSQL** - Supported
+- **SQLite** - Development default
+- **Supabase** - Cloud PostgreSQL support
 
-Xerppy is a production-ready and customizable ERP system starter kit based on FastAPI and React. It provides a solid foundation for building modular, scalable web applications with AI Agentic integration powered by CrewAI.
+### AI Integration
+- **CrewAI** - Multi-agent AI framework with tools
 
-### What is Xerppy?
-
-Xerppy is designed to bridge the gap between Python's powerful ecosystem and Laravel-inspired application structure. It offers:
-
-- **Modular Monolith Architecture**: Clean separation of concerns with MVC pattern
-- **AI Integration**: Built-in CrewAI support for intelligent automation
-- **Full-Stack Ready**: React frontend + FastAPI backend in one repository
-- **Production-Optimized**: Docker deployment with multi-stage builds
-
-### Tech Stack
-
-| Layer | Technology |
-|-------|------------|
-| Backend | FastAPI 0.109+, Python 3.11+ |
-| Database | SQLAlchemy 2.0 (Async) with SQLite/Alembic, MySQL/Alembic, and PostgreSQL/Alembic |
-| Auth | JWT with password hashing (Passlib) |
-| AI | CrewAI 0.30+ with agent workflows |
-| Frontend | React 18 with TypeScript + Vite |
-| Styling | Tailwind CSS 3.4 |
-| Deployment | Docker with multi-stage builds |
-
-### Architecture Description
-
-Xerppy follows a **Modular Monolith** architecture:
-
-```
-┌─────────────────────────────────────────────────────┐
-│                  Xerppy Application                  │
-├─────────────┬─────────────┬─────────────────────────┤
-│   Modules   │   Services  │     Controllers         │
-│  (Features) │  (Business) │    (Presentation)       │
-├─────────────┴─────────────┴─────────────────────────┤
-│              Shared Core (Models, Utils)             │
-├─────────────────────────────────────────────────────┤
-│              Database Layer (SQLAlchemy)             │
-└─────────────────────────────────────────────────────┘
-```
-
----
+### DevOps
+- **Docker** - Containerization
+- **Docker Compose** - Multi-container orchestration
 
 ## Features
 
-- ✅ **Modular Architecture** - MVC pattern with clear separation of concerns
-- ✅ **Authentication System** - JWT-based auth with role-based permissions
-- ✅ **AI Workflows** - CrewAI integration for intelligent automation
-- ✅ **Database Migrations** - Alembic for version-controlled schema changes
-- ✅ **Production-Ready** - Docker multi-stage builds for minimal images
-- ✅ **Type Safety** - Full TypeScript/Python type coverage
-- ✅ **Dev Experience** - Hot reload for both frontend and backend
+### Modular Monolith Architecture
+- **Application Factory Pattern** - Clean separation of concerns
+- **Blueprint-based routing** - Organized endpoint structure
+- **Plugin Engine** - Extensible functionality via entry points
 
----
+### Authentication System
+- **Local Authentication** - Email/password with secure password hashing
+- **Google SSO** - OAuth 2.0 integration via Authlib
+- **LDAP Support** - Enterprise directory integration
 
-## Quickstart Guide
+### Database Management
+- **Multiple Database Support** - MySQL, PostgreSQL, SQLite, Supabase
+- **Alembic Migrations** - Version-controlled schema changes
+- **SQLAlchemy ORM** - Database abstraction layer
 
-### Prerequisites
+### AI Integration
+- **CrewAI Integration** - Multi-agent AI workflows
+- **Database Query Tool** - Natural language database access
 
-- Python 3.11+
-- Node.js 20+
-- uv (Python package manager)
-- npm or pnpm
-
-### Backend Setup
-
-```bash
-# Navigate to backend directory
-cd backend
-
-# Install dependencies with uv
-uv sync --active
-
-# Create admin user
-uv run --active python -m app.scripts.create_admin interactive
-
-# Start development server
-uv run --active python main.py
-```
-
-### Frontend Setup
-
-```bash
-# Navigate to frontend directory
-cd frontend
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-### Access URLs
-
-| Service | URL |
-|---------|-----|
-| Backend API | http://localhost:8003 |
-| Frontend | http://localhost:5173 |
-| API Docs (Swagger) | http://localhost:8003/docs |
-| API ReDocs | http://localhost:8003/redoc |
-
----
-
-## Localhost Development
-
-This project includes setup scripts to help you get started quickly. The scripts check for required dependencies (Python, Node.js, uv) and set up both backend and frontend.
-
-### Prerequisites
-
-**For Linux/macOS/WS2:**
-- Bash shell (Linux, macOS, WSL, or Git Bash on Windows)
-
-**For Windows (Native):**
-- PowerShell 7+ (download from https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows)
-- Run in PowerShell 7+ terminal: `pwsh.exe`
-
-### Quick Start
-
-**Linux/macOS/WS2/Git Bash:**
-```bash
-./setup.sh setup
-```
-
-**Windows (PowerShell 7+):**
-```powershell
-pwsh.exe .\setup.ps1 setup
-```
-
-### Available Commands
-
-**Bash (Linux/macOS/WS2/Git Bash):**
-| Command | Description |
-|---------|-------------|
-| `./setup.sh setup` | Set up entire project (backend + frontend) |
-| `./setup.sh setup-backend` | Set up backend only |
-| `./setup.sh setup-frontend` | Set up frontend only |
-| `./setup.sh start-backend` | Start backend server |
-| `./setup.sh start-frontend` | Start frontend server |
-| `./setup.sh start-all` | Start both servers |
-| `./setup.sh help` | Show help message |
-
-**PowerShell (Windows):**
-| Command | Description |
-|---------|-------------|
-| `.\setup.ps1 setup` | Set up entire project (backend + frontend) |
-| `.\setup.ps1 setup-backend` | Set up backend only |
-| `.\setup.ps1 setup-frontend` | Set up frontend only |
-| `.\setup.ps1 start-backend` | Start backend server |
-| `.\setup.ps1 start-frontend` | Start frontend server |
-| `.\setup.ps1 start-all` | Start both servers |
-| `.\setup.ps1 help` | Show help message |
-
-### What the Setup Does
-
-**Backend:**
-1. Checks Python version (reads from backend/.python-version)
-2. Installs Python if not present
-3. Installs uv package manager
-4. Installs Python dependencies with `uv sync`
-5. Creates admin user interactively
-6. Starts backend server on port 8003
-
-**Frontend:**
-1. Checks Node.js installation
-2. Installs npm dependencies
-3. Starts frontend development server
-
-### Manual Setup (Alternative)
-
-If you prefer to set up manually:
-
-**Backend:**
-```bash
-cd backend
-uv sync --active
-# Update your backend/.env
-alembic upgrade head
-uv run --active python -m app.scripts.create_admin interactive
-uv run --active python main.py
-```
-
-**Frontend:**
-```bash
-cd frontend
-# Update your frontend/.env
-npm install
-npm run dev
-```
-
----
-
-## Admin Guide
-
-### Creating an Admin User
-
-Xerppy includes an interactive CLI script for admin user creation.
-
-#### Interactive Mode (Recommended)
-
-```bash
-cd backend
-uv run --active python -m app.scripts.create_admin interactive
-```
-
-This will prompt you for:
-- Username
-- Email
-- Password (with confirmation)
-
-#### Non-Interactive Mode
-
-```bash
-cd backend
-uv run --active python -m app.scripts.create_admin --username admin --email admin@example.com --password yourpassword
-```
-
-### Default Roles
-
-Xerppy seeds the following roles on first run:
-
-| Role | Description |
-|------|-------------|
-| `admin` | Full system access |
-| `user` | Standard authenticated user |
-| `viewer` | Read-only access |
-
-### Default Permissions
-
-The system includes CRUD permissions for core entities:
-
-| Permission | Description |
-|------------|-------------|
-| `create` | Create new resources |
-| `read` | View resources |
-| `update` | Modify existing resources |
-| `delete` | Remove resources |
-
-### Role-Based Access Control (RBAC)
-
-Permissions are assigned to roles automatically. Admin role gets all permissions, while User role gets basic read access.
-
----
+### Plugin System
+- **Entry Point Discovery** - Automatic plugin loading
+- **Blueprint Registration** - Plugin routes integration
+- **Application Hooks** - Lifecycle event handling
 
 ## Project Structure
 
 ```
 xerppy-core/
-├── backend/                    # FastAPI backend
-│   ├── app/
+├── core/                          # Backend application
+│   ├── __init__.py               # Package initialization
+│   ├── app.py                    # Flask application factory
+│   ├── extensions.py            # Flask extensions setup
+│   ├── models.py                # SQLAlchemy models
+│   ├── ai/                       # AI integration
 │   │   ├── __init__.py
-│   │   ├── main.py            # Application entry point
-│   │   ├── config/            # Configuration management
-│   │   │   ├── __init__.py
-│   │   │   └── settings.py    # Pydantic settings
-│   │   ├── db/                # Database layer
-│   │   │   ├── __init__.py
-│   │   │   └── connection.py  # Async SQLAlchemy connection
-│   │   ├── modules/           # Feature modules (MVC)
-│   │   │   ├── __init__.py
-│   │   │   ├── auth/          # Authentication module
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── models.py  # SQLAlchemy models
-│   │   │   │   ├── schemas.py # Pydantic schemas
-│   │   │   │   ├── router.py  # FastAPI routes
-│   │   │   │   ├── service.py # Business logic
-│   │   │   │   └── repository.py # Data access
-│   │   │   └── ai/            # AI/CrewAI module
-│   │   │       ├── __init__.py
-│   │   │       ├── config/    # Agent/task configurations
-│   │   │       ├── router.py
-│   │   │       ├── factory.py
-│   │   │       └── flows/     # CrewAI flows
-│   │   ├── scripts/           # CLI scripts
-│   │   │   ├── __init__.py
-│   │   │   └── create_admin.py
-│   │   ├── tests/             # Module tests
-│   │   │   └── __init__.py
-│   │   └── utils/             # Shared utilities
-│   │       └── __init__.py
-│   ├── tests/                 # Integration tests
-│   ├── main.py
-│   ├── pyproject.toml
-│   └── requirements.txt
-│
-├── frontend/                  # React frontend
+│   │   ├── crew_manager.py      # CrewAI management
+│   │   └── database_query_tool.py
+│   ├── plugins/                  # Plugin system
+│   │   ├── __init__.py
+│   │   ├── manager.py            # Plugin manager
+│   │   └── sample.py             # Sample plugin
+├── docker/                       # Docker configuration
+│   ├── Dockerfile                # Container definition
+│   └── docker-compose.yml        # Multi-container setup
+├── frontend/                     # React frontend
 │   ├── src/
-│   │   ├── App.tsx           # Root component
-│   │   ├── main.tsx          # Entry point
-│   │   ├── context/          # React contexts
-│   │   │   └── AuthContext.tsx
-│   │   ├── pages/            # Page components
-│   │   │   ├── LoginPage.tsx
-│   │   │   └── Dashboard.tsx
-│   │   ├── services/         # API services
-│   │   │   └── authService.ts
-│   │   └── index.css         # Global styles
+│   │   ├── components/           # React components
+│   │   ├── pages/                # Page components
+│   │   ├── services/             # API services
+│   │   ├── App.tsx              # Main app component
+│   │   ├── main.tsx             # Entry point
+│   │   └── index.css            # Global styles
 │   ├── package.json
 │   ├── vite.config.ts
 │   └── tailwind.config.js
-│
-├── Dockerfile                # Multi-stage Docker build
-├── docker-compose.yml        # Docker Compose configuration
-└── README.md
+├── .env.example                  # Environment template
+├── manage.py                     # CLI management script
+├── pyproject.toml                # Python project config
+└── README.md                     # This file
 ```
 
-### Backend Structure Explanation
+## Quick Start
 
-| Directory | Purpose |
-|-----------|---------|
-| `config/` | Application settings using Pydantic Settings |
-| `db/` | Database connection and session management |
-| `modules/` | Feature modules following MVC pattern |
-| `scripts/` | CLI scripts for admin tasks |
-| `tests/` | Unit tests for backend modules |
-| `utils/` | Helper functions and utilities |
+### Prerequisites
 
-### Frontend Structure Explanation
+- Python 3.12 or higher
+- Node.js 20 or higher
+- Docker and Docker Compose (for containerized deployment)
+- [uv](https://github.com/astral-sh/uv) - Python package manager
 
-| Directory | Purpose |
-|-----------|---------|
-| `src/context/` | React context providers (Auth, Theme) |
-| `src/pages/` | Route page components |
-| `src/services/` | API client services |
-| `src/components/` | Reusable UI components |
+### Installation Steps
 
----
+1. **Clone and setup dependencies**
 
-## Default and Ready API Endpoints
+   ```bash
+   uv sync
+   ```
 
-### Authentication
+2. **Copy environment configuration**
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/v1/auth/register` | Register new user |
-| POST | `/api/v1/auth/login` | Login and get JWT token |
-| GET | `/api/v1/auth/me` | Get current user info |
-| GET | `/api/v1/auth/roles` | List available roles |
+   ```bash
+   cp .env.example .env
+   ```
 
-### AI Module
+3. **Initialize and run database migrations**
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/v1/ai/flows/example` | Run example AI flow |
-| POST | `/api/v1/ai/knowledge/query` | Query knowledge base |
+   ```bash
+   flask db init
+   flask db migrate -m "Initial migration"
+   flask db upgrade
+   ```
 
-### Health Checks
+4. **Seed admin user**
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/` | API root with status |
-| GET | `/health` | Simple health check |
+   ```bash
+   flask seed
+   ```
 
----
+5. **Install frontend dependencies**
 
-## CrewAI Integration
+   ```bash
+   cd frontend
+   npm install
+   ```
 
-Xerppy includes CrewAI integration for building intelligent AI workflows.
+6. **Start development servers**
 
-### Configuring Agents
+   Terminal 1 (Frontend):
+   ```bash
+   cd frontend
+   npm run dev
+   ```
 
-Agents are configured in `backend/app/modules/ai/config/agents.yaml`:
+   Terminal 2 (Backend):
+   ```bash
+   flask run
+   ```
 
-```yaml
-agents:
-  - name: "ResearchAgent"
-    role: "researcher"
-    goal: "Gather information about {topic}"
-    backstory: "You are an expert researcher..."
-```
+7. **Access the application**
 
-### Configuring Tasks
+   - Frontend: http://localhost:5173
+   - Backend API: http://localhost:8003
 
-Tasks are defined in `backend/app/modules/ai/config/tasks.yaml`:
+## Docker Deployment
 
-```yaml
-tasks:
-  - name: "research_task"
-    description: "Research the given topic"
-    agent: "ResearchAgent"
-    expected_output: "Detailed research report"
-```
+### Using Docker Compose
 
-### Running Flows via API
+The project includes a production-ready Docker configuration with MySQL, web server, and migration services.
 
 ```bash
-# Run example flow
-curl -X POST http://localhost:8003/api/v1/ai/flows/example \
-  -H "Content-Type: application/json" \
-  -d '{"topic": "machine learning"}'
-```
-
----
-
-## Production Guide
-
-### Building with Docker
-
-```bash
-# Build the Docker image
-docker build -t xerppy .
-
-# Run with Docker Compose (recommended)
+cd docker
 docker-compose up -d
-
-# Or run directly
-docker run -p 8003:8003 \
-  -e DATABASE_URL="sqlite+aiosqlite:///./prod.db" \
-  -e SECRET_KEY="your-production-secret-key" \
-  xerppy
 ```
 
-### Environment Variables
+### Services
 
-All configuration is managed through environment variables. Create a `.env` file in the `backend/` directory based on `.env.example`.
+| Service   | Description         | Port  |
+|-----------|---------------------|-------|
+| web       | Flask application   | 8000  |
+| db        | MySQL 8.0 database | 3306  |
+| migration | Database migrations | -     |
 
-#### Backend Environment Variables
-
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `APP_NAME` | No | `Xerppy API` | Application name |
-| `APP_VERSION` | No | `0.1.0` | Application version |
-| `DEBUG` | No | `false` | Enable debug mode |
-| `DATABASE_URL` | Yes | `sqlite+aiosqlite:///./xerppy.db` | Database connection string |
-| `JWT_SECRET_KEY` | Yes | - | JWT signing secret (use strong key in production) |
-| `JWT_ALGORITHM` | No | `HS256` | JWT algorithm |
-| `JWT_ACCESS_TOKEN_EXPIRE_MINUTES` | No | `30` | Token expiration time |
-| `CORS_ORIGINS` | No | `http://localhost:5173` | Comma-separated CORS origins |
-| `BACKEND_HOST` | No | `0.0.0.0` | Backend server host |
-| `BACKEND_PORT` | No | `8003` | Backend server port |
-
-#### Frontend Environment Variables
-
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `VITE_API_URL` | No | `http://localhost:8003` | Backend API URL |
-| `VITE_PORT` | No | `5173` | Frontend dev server port |
-
-#### Example `.env` File
+### Running Migrations in Docker
 
 ```bash
-# Application
-APP_NAME="Xerppy API"
-APP_VERSION="0.1.0"
-DEBUG=false
-
-# Database
-DATABASE_URL="sqlite+aiosqlite:///./xerppy.db"
-
-# JWT Authentication
-JWT_SECRET_KEY="your-super-secret-key-change-in-production"
-JWT_ALGORITHM="HS256"
-JWT_ACCESS_TOKEN_EXPIRE_MINUTES=30
-
-# CORS
-CORS_ORIGINS="http://localhost:5173"
-
-# Server Configuration
-BACKEND_HOST=0.0.0.0
-BACKEND_PORT=8003
+cd docker
+docker-compose up -d migration
 ```
 
-### Production Considerations
+## Using Remote Databases
 
-#### Database
+Xerppy supports connecting to remote databases (AWS RDS, Supabase, Azure Database, Google Cloud SQL, etc.) as an alternative to the local MySQL container.
 
-For production, use PostgreSQL instead of SQLite:
+### Quick Setup
+
+1. **Set DB_TYPE to remote** in your `.env` file:
+
+```env
+DB_TYPE=remote
+REMOTE_DB_URL=your-connection-string-here
+```
+
+2. **Start the web service** (no need to start the local db):
 
 ```bash
-# Example PostgreSQL connection
-DATABASE_URL="postgresql+asyncpg://user:password@localhost:5432/xerppy"
+cd docker
+docker-compose up -d web
 ```
 
-#### Secrets Management
+### Database Connection Examples
 
-- Use environment variables for all secrets
-- Consider using Docker secrets or external vault
-- Never commit `.env` files to version control
+#### AWS RDS (MySQL)
 
-#### Security Checklist
+```env
+DB_TYPE=remote
+REMOTE_DB_URL=mysql+pymysql://username:password@database-endpoint.rds.amazonaws.com:3306/database_name
+```
 
-- [ ] Set strong `SECRET_KEY` (minimum 32 characters)
-- [ ] Use HTTPS in production
-- [ ] Configure proper CORS origins
-- [ ] Enable rate limiting (not included by default)
-- [ ] Set up proper logging and monitoring
+#### AWS RDS (PostgreSQL)
 
----
+```env
+DB_TYPE=remote
+REMOTE_DB_URL=postgresql://username:password@database-endpoint.rds.amazonaws.com:5432/database_name
+```
 
-## Development Commands
+#### Supabase
 
-### Running Tests
+```env
+DB_TYPE=supabase
+SUPABASE_DB_URL=postgresql://postgres:your-password@db.project-ref.supabase.co:5432/postgres
+```
+
+#### Azure Database
+
+```env
+DB_TYPE=remote
+REMOTE_DB_URL=mysql+pymysql://username:password@server-name.mysql.database.azure.com:3306/database_name
+```
+
+#### Google Cloud SQL
+
+```env
+DB_TYPE=remote
+REMOTE_DB_URL=mysql+pymysql://username:password@/cloudsql/project:region:instance/database
+```
+
+### Using Local MySQL Container
+
+If you prefer to use the local MySQL container instead of a remote database:
 
 ```bash
-# Backend tests
-cd backend
-uv run --active pytest
-
-# Backend tests with coverage
-uv run --active pytest --cov=app
-
-# Frontend tests
-cd frontend
-npm run test
+cd docker
+# Start with local MySQL database
+docker-compose --profile local-db up -d
 ```
 
-### Database Migrations
+The `--profile local-db` flag starts the MySQL container along with the web service.
+
+### Environment Variables Reference
+
+| Variable        | Description                                    | Required for Remote DB |
+|-----------------|-----------------------------------------------|------------------------|
+| `DB_TYPE`       | Database type: local, remote, supabase, etc. | Yes                    |
+| `REMOTE_DB_URL` | Full connection string for remote database   | Yes (when DB_TYPE=remote) |
+| `SUPABASE_DB_URL` | Supabase PostgreSQL connection string     | Yes (when DB_TYPE=supabase) |
+| `DB_HOST`       | Database host (for local DB_TYPE)            | No                     |
+| `DB_PORT`       | Database port (for local DB_TYPE)            | No                     |
+| `DB_NAME`       | Database name (for local DB_TYPE)            | No                     |
+| `DB_USER`       | Database username (for local DB_TYPE)        | No                     |
+| `DB_PASSWORD`   | Database password (for local DB_TYPE)        | No                     |
+
+## CLI Commands
+
+Xerppy provides several CLI commands for managing the application:
+
+| Command                    | Description                           |
+|----------------------------|---------------------------------------|
+| `flask seed`               | Seed admin user                       |
+| `flask setup-supabase`     | Configure Supabase database           |
+| `flask create-admin <email> <password>` | Create admin user          |
+| `flask list-users`         | List all users in database           |
+| `flask db init`            | Initialize migrations                 |
+| `flask db migrate`         | Create new migration                 |
+| `flask db upgrade`         | Apply migrations                      |
+| `flask db downgrade`       | Rollback last migration               |
+
+### Examples
 
 ```bash
-# Create new migration
-cd backend
-uv run --active alembic revision -m "description"
+# Create a new admin user
+flask create-admin admin@example.com mypassword123
 
-# Apply migrations
-uv run --active alembic upgrade head
+# List all users
+flask list-users
 
-# Check current revision
-uv run --active alembic current
+# Configure Supabase
+flask setup-supabase
 ```
 
-### Linting and Formatting
+## Environment Variables
 
-```bash
-# Backend (ruff)
-cd backend
-uv run --active ruff check .
-uv run --active ruff format .
+Configure your application by setting environment variables in the `.env` file:
 
-# Frontend (eslint)
-cd frontend
-npm run lint
-npm run lint:fix
-```
+### Flask Configuration
 
-### Database Seeding
+| Variable      | Description                    | Default                    |
+|---------------|--------------------------------|----------------------------|
+| `FLASK_ENV`   | Application environment        | `development`              |
+| `SECRET_KEY`  | Session secret key             | (auto-generated)           |
 
-```bash
-# Reset database and seed roles
-uv run --active python -m app.scripts.create_admin --force
-```
+### Database Configuration
 
----
+| Variable        | Description                  | Default         |
+|-----------------|------------------------------|-----------------|
+| `DB_TYPE`       | Database type                | `sqlite`        |
+| `DB_HOST`       | Database host                | `localhost`     |
+| `DB_PORT`       | Database port                | `3306`          |
+| `DB_NAME`       | Database name                | `xerppy`        |
+| `DB_USER`       | Database username            | `root`          |
+| `DB_PASSWORD`   | Database password            | -               |
+| `SQLITE_PATH`   | SQLite file path             | `xerppy.db`     |
+
+### Supabase Configuration
+
+| Variable          | Description                    |
+|-------------------|--------------------------------|
+| `SUPABASE_DB_URL` | Supabase PostgreSQL connection |
+
+### LDAP Configuration (Optional)
+
+| Variable        | Description                    |
+|-----------------|--------------------------------|
+| `LDAP_ENABLED`  | Enable LDAP authentication     |
+| `LDAP_HOST`     | LDAP server host              |
+| `LDAP_PORT`     | LDAP server port              |
+| `LDAP_BASE_DN`  | LDAP base DN                  |
+| `LDAP_USE_SSL`  | Use SSL for LDAP              |
+| `LDAP_USE_TLS`  | Use TLS for LDAP              |
+
+### Google SSO Configuration (Optional)
+
+| Variable              | Description                    |
+|-----------------------|--------------------------------|
+| `GOOGLE_CLIENT_ID`    | Google OAuth client ID        |
+| `GOOGLE_CLIENT_SECRET`| Google OAuth client secret    |
+| `GOOGLE_REDIRECT_URI` | OAuth callback URI           |
+
+### AI Configuration
+
+| Variable        | Description              |
+|-----------------|-------------------------|
+| `CREWAI_API_KEY`| CrewAI API key         |
+
+### Upload Configuration
+
+| Variable       | Description           | Default   |
+|----------------|----------------------|-----------|
+| `UPLOAD_FOLDER`| Upload directory     | `uploads` |
+
+## Default Credentials
+
+After running `flask seed`, you can log in with:
+
+- **Email:** admin@xerppy.local
+- **Password:** xerppy123
+
+> **Security Note:** Change the default admin password immediately after first login in a production environment.
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please follow these guidelines:
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. **Fork the repository** and create a feature branch
+2. **Follow the existing code style** (use Ruff for linting)
+3. **Write tests** for new features and bug fixes
+4. **Update documentation** for any changes
+5. **Use meaningful commit messages** following conventional commits
 
----
+### Development Commands
+
+```bash
+# Install development dependencies
+uv sync --extra dev
+
+# Run linter
+ruff check .
+
+# Run type checker
+mypy .
+
+# Start development server
+flask run
+```
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
+## Support
 
-## Acknowledgments
-
-- [FastAPI](https://fastapi.tiangolo.com/) - The web framework used
-- [CrewAI](https://www.crewai.com/) - AI agent framework
-- [Vite](https://vitejs.dev/) - Frontend build tool
+For issues and feature requests, please open an issue on GitHub.
 
 ---
 
-<div align="center">
-Made with ❤️ by the Xerppy Team
-</div>
+Built with ❤️ using Flask and React

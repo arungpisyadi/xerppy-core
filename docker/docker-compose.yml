@@ -1,0 +1,174 @@
+# =============================================================================
+# Xerppy ERP Framework - Docker Compose Configuration
+# =============================================================================
+# Services: MySQL Database, Flask Application, Database Migration
+#
+# Usage:
+#   - With local MySQL: docker-compose --profile local-db up -d
+#   - With remote DB:   docker-compose up -d (no local-db needed)
+#   - Run migrations:   docker-compose --profile migrate up -d migration
+#
+# Remote Database Support:
+#   Xerppy supports connecting to remote databases (AWS RDS, Supabase, etc.)
+#   by setting DB_TYPE=remote and providing REMOTE_DB_URL in .env
+# =============================================================================
+
+services:
+  # -------------------------------------------------------------------------
+  # MySQL 8.0 Database (Local Development)
+  # -------------------------------------------------------------------------
+  # This service is optional. Use --profile local-db to start it.
+  # For remote databases (AWS RDS, cloud DBs), skip this service and
+  # configure REMOTE_DB_URL in your .env file.
+  # -------------------------------------------------------------------------
+  db:
+    image: mysql:8.0
+    container_name: xerppy-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-xerppy_root_pass}
+      MYSQL_DATABASE: ${DB_NAME:-xerppy}
+      MYSQL_USER: ${DB_USER:-xerppy}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-xerppy_pass}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - xerppy-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD:-xerppy_root_pass}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command: --default-authentication-plugin=mysql_native_password
+    profiles:
+      - local-db
+
+  # -------------------------------------------------------------------------
+  # Flask Application (Web Server)
+  # -------------------------------------------------------------------------
+  # The web service works with or without the local db service.
+  # For remote databases, ensure REMOTE_DB_URL is set in .env.
+  # -------------------------------------------------------------------------
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: xerppy-web
+    restart: unless-stopped
+    # depends_on db is conditional - remove condition when using remote DB
+    # Use depends_on with condition only when using local-db profile
+    environment:
+      # Flask Configuration
+      FLASK_ENV: production
+      SECRET_KEY: ${SECRET_KEY:-xerppy-secret-key-change-in-production}
+      
+      # Database Configuration
+      # DB_TYPE: local (use local MySQL), remote (use REMOTE_DB_URL), supabase
+      DB_TYPE: ${DB_TYPE:-local}
+      DB_HOST: ${DB_HOST:-db}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_NAME: ${DB_NAME:-xerppy}
+      DB_USER: ${DB_USER:-xerppy}
+      DB_PASSWORD: ${DB_PASSWORD:-xerppy_pass}
+      
+      # Remote Database URL (use when DB_TYPE=remote)
+      REMOTE_DB_URL: ${REMOTE_DB_URL:-}
+      
+      # Python Configuration
+      PYTHONUNBUFFERED: "1"
+      
+      # Optional: Supabase (if used)
+      SUPABASE_DB_URL: ${SUPABASE_DB_URL:-}
+      
+      # Optional: LDAP Configuration
+      LDAP_ENABLED: ${LDAP_ENABLED:-false}
+      LDAP_HOST: ${LDAP_HOST:-ldap://localhost}
+      LDAP_PORT: ${LDAP_PORT:-389}
+      LDAP_BASE_DN: ${LDAP_BASE_DN:-dc=example,dc=com}
+      
+      # Optional: Google SSO
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI:-http://localhost:8000/auth/google/callback}
+      
+      # Optional: CrewAI
+      CREWAI_API_KEY: ${CREWAI_API_KEY:-}
+      
+      # Upload Configuration
+      UPLOAD_FOLDER: /app/uploads
+    ports:
+      - "8000:8000"
+    volumes:
+      # Development: Mount source for hot reload (optional)
+      - ../core:/app/core:ro
+      - ../static:/app/static:ro
+      - ../templates:/app/templates:ro
+      # Upload folder for persistent storage
+      - uploads_data:/app/uploads
+    networks:
+      - xerppy-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # -------------------------------------------------------------------------
+  # Database Migration Service
+  # -------------------------------------------------------------------------
+  # Use --profile migrate to run migrations
+  # Works with local MySQL or remote databases
+  # -------------------------------------------------------------------------
+  migration:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: xerppy-migration
+    restart: "no"
+    # depends_on db is conditional - only needed for local MySQL
+    environment:
+      # Flask Configuration
+      FLASK_ENV: production
+      SECRET_KEY: ${SECRET_KEY:-xerppy-secret-key-change-in-production}
+      
+      # Database Configuration
+      # DB_TYPE: local (use local MySQL), remote (use REMOTE_DB_URL), supabase
+      DB_TYPE: ${DB_TYPE:-local}
+      DB_HOST: ${DB_HOST:-db}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_NAME: ${DB_NAME:-xerppy}
+      DB_USER: ${DB_USER:-xerppy}
+      DB_PASSWORD: ${DB_PASSWORD:-xerppy_pass}
+      
+      # Remote Database URL (use when DB_TYPE=remote)
+      REMOTE_DB_URL: ${REMOTE_DB_URL:-}
+      
+      # Python Configuration
+      PYTHONUNBUFFERED: "1"
+      
+      # Optional: Supabase (if used)
+      SUPABASE_DB_URL: ${SUPABASE_DB_URL:-}
+    networks:
+      - xerppy-network
+    command: flask db upgrade
+    profiles:
+      - migrate
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  xerppy-network:
+    driver: bridge
+
+# =============================================================================
+# Volumes
+# =============================================================================
+volumes:
+  mysql_data:
+    name: xerppy-mysql-data
+  uploads_data:
+    name: xerppy-uploads-data
