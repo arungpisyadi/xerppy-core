@@ -208,6 +208,7 @@ __marimo__/
 
 # nodejs
 node_modules/
+frontend/package-lock.json
 
 # Project speficific
 .vscode/*
