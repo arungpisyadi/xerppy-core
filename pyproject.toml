@@ -2,7 +2,7 @@
 name = "xerppy"
 version = "0.1.0"
 description = "Production-grade full-stack Python ERP framework"
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 dependencies = [
     "flask==3.1.0",
     "flask-sqlalchemy==3.1.1",
@@ -38,7 +38,7 @@ packages = ["app"]
 
 [tool.ruff]
 line-length = 120
-target-version = "py312"
+target-version = "py311"
 
 [tool.ruff.lint]
 select = [
@@ -57,7 +57,7 @@ ignore = [
 ]
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.11"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false
