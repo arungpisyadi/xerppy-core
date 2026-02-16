@@ -105,7 +105,7 @@ xerppy-core/
 - Python 3.12 or higher
 - Node.js 20 or higher
 - Docker and Docker Compose (for containerized deployment)
-- [uv](https://github.com/astral-sh/uv) - Python package manager
+- [uv](https://github.com/astral-sh/uv) - Python package manager. Install it using `pip install uv`
 
 ### Installation Steps
 
