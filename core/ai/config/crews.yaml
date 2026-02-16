@@ -1,0 +1,52 @@
+# CrewAI Crews Configuration
+# This file defines all crews (agent + task combinations) available for the ERP system
+# Each crew specifies agents, tasks, and execution settings
+
+erp_assistant:
+  name: "ERP Assistant"
+  description: "General-purpose ERP data analysis assistant that can answer questions and provide insights"
+  agents:
+    - erp_analyst
+  tasks:
+    - analyze_erp_data
+  verbose: true
+  process: sequential  # sequential or hierarchical
+
+reporting_crew:
+  name: "Reporting Crew"
+  description: "Crew dedicated to generating various business reports from ERP data"
+  agents:
+    - report_generator
+    - data_validator
+  tasks:
+    - generate_sales_report
+    - generate_financial_summary
+    - validate_inventory_data
+  verbose: true
+  process: sequential
+
+data_analysis_crew:
+  name: "Data Analysis Crew"
+  description: "Crew specialized in analyzing business data and providing actionable insights"
+  agents:
+    - erp_analyst
+    - data_validator
+  tasks:
+    - customer_data_analysis
+    - validate_inventory_data
+  verbose: true
+  process: sequential
+
+workflow_crew:
+  name: "Workflow Crew"
+  description: "Crew for orchestrating complex multi-step business workflows"
+  agents:
+    - workflow_orchestrator
+    - erp_analyst
+    - report_generator
+  tasks:
+    - process_order_workflow
+    - analyze_erp_data
+    - generate_sales_report
+  verbose: true
+  process: hierarchical  # hierarchical allows delegation

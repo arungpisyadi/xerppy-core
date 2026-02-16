@@ -1,0 +1,33 @@
+# CrewAI Tasks Configuration
+# This file defines all tasks available for the ERP system
+# Each task has a description, expected output, and assigned agent
+
+analyze_erp_data:
+  description: "Answer user questions about ERP data by querying the database and presenting the results in a clear format."
+  expected_output: "Clear, formatted responses with data from the ERP system"
+  agent: erp_analyst
+
+generate_sales_report:
+  description: "Generate a comprehensive sales report including revenue, trends, and performance metrics."
+  expected_output: "Detailed sales report with charts and key performance indicators"
+  agent: report_generator
+
+validate_inventory_data:
+  description: "Review inventory records to identify inconsistencies, low stock items, and data quality issues."
+  expected_output: "Inventory validation report with identified issues and recommendations"
+  agent: data_validator
+
+process_order_workflow:
+  description: "Coordinate the complete order processing workflow from order creation to fulfillment."
+  expected_output: "Order processing status report with completion details"
+  agent: workflow_orchestrator
+
+generate_financial_summary:
+  description: "Create a financial summary report including revenue, expenses, and profit margins."
+  expected_output: "Financial summary with key metrics and trend analysis"
+  agent: report_generator
+
+customer_data_analysis:
+  description: "Analyze customer data to identify patterns, preferences, and segment-specific insights."
+  expected_output: "Customer analysis report with segmentation and recommendations"
+  agent: erp_analyst
