@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { User, Lock, Mail, Shield, CheckCircle, AlertCircle } from 'lucide-react'
-import { getCurrentUser, updatePassword } from '../services/api'
+import { updatePassword } from '../services/api'
 
 interface User {
   id: string
@@ -22,7 +22,6 @@ export function Settings() {
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
-  // Mock user data - will be replaced with actual API call
   const user: User = {
     id: '1',
     email: 'admin@xerppy.com',
@@ -34,7 +33,6 @@ export function Settings() {
     e.preventDefault()
     setMessage(null)
 
-    // Validation
     if (!currentPassword || !newPassword || !confirmPassword) {
       setMessage({ type: 'error', text: 'Please fill in all fields' })
       return
@@ -54,7 +52,7 @@ export function Settings() {
 
     try {
       const response: ApiResponse<void> = await updatePassword(currentPassword, newPassword)
-      
+
       if (response.success) {
         setMessage({ type: 'success', text: 'Password updated successfully!' })
         setCurrentPassword('')
@@ -74,32 +72,34 @@ export function Settings() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-        <p className="text-gray-500 mt-1">Manage your account settings and preferences.</p>
+        <h1 className="text-2xl font-semibold text-gray-800 dark:text-white/90">Settings</h1>
+        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          Manage your account settings and preferences.
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* User Information Card */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center">
-                <User className="w-6 h-6 text-primary-600" />
+          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <div className="mb-6 flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 dark:bg-brand-500/10">
+                <User className="h-6 w-6 text-brand-600 dark:text-brand-500" size={24} />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">{user.name}</h2>
-                <p className="text-sm text-gray-500">{user.role}</p>
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-white/90">{user.name}</h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{user.role}</p>
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="flex items-center gap-3 text-sm">
-                <Mail className="w-4 h-4 text-gray-400" />
-                <span className="text-gray-600">{user.email}</span>
+                <Mail className="h-4 w-4 text-gray-400" size={16} />
+                <span className="text-gray-600 dark:text-gray-300">{user.email}</span>
               </div>
               <div className="flex items-center gap-3 text-sm">
-                <Shield className="w-4 h-4 text-gray-400" />
-                <span className="text-gray-600">{user.role}</span>
+                <Shield className="h-4 w-4 text-gray-400" size={16} />
+                <span className="text-gray-600 dark:text-gray-300">{user.role}</span>
               </div>
             </div>
           </div>
@@ -107,25 +107,25 @@ export function Settings() {
 
         {/* Password Update Form */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-            <div className="flex items-center gap-3 mb-6">
-              <Lock className="w-5 h-5 text-gray-400" />
-              <h2 className="text-lg font-semibold text-gray-900">Change Password</h2>
+          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <div className="mb-6 flex items-center gap-3">
+              <Lock className="h-5 w-5 text-gray-400" size={20} />
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-white/90">Change Password</h2>
             </div>
 
             {/* Message Alert */}
             {message && (
               <div
-                className={`flex items-center gap-2 p-4 rounded-lg mb-6 ${
+                className={`mb-6 flex items-center gap-2 rounded-lg p-4 ${
                   message.type === 'success'
-                    ? 'bg-green-50 text-green-700 border border-green-200'
-                    : 'bg-red-50 text-red-700 border border-red-200'
+                    ? 'bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800'
+                    : 'bg-red-50 text-red-700 border border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800'
                 }`}
               >
                 {message.type === 'success' ? (
-                  <CheckCircle className="w-5 h-5" />
+                  <CheckCircle className="h-5 w-5" size={20} />
                 ) : (
-                  <AlertCircle className="w-5 h-5" />
+                  <AlertCircle className="h-5 w-5" size={20} />
                 )}
                 <span className="text-sm font-medium">{message.text}</span>
               </div>
@@ -133,7 +133,7 @@ export function Settings() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="currentPassword" className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                   Current Password
                 </label>
                 <input
@@ -141,13 +141,13 @@ export function Settings() {
                   id="currentPassword"
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors"
+                  className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-sm placeholder:text-gray-400 focus:border-brand-300 focus:outline-none focus:ring-2 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                   placeholder="Enter current password"
                 />
               </div>
 
               <div>
-                <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="newPassword" className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                   New Password
                 </label>
                 <input
@@ -155,14 +155,14 @@ export function Settings() {
                   id="newPassword"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors"
+                  className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-sm placeholder:text-gray-400 focus:border-brand-300 focus:outline-none focus:ring-2 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                   placeholder="Enter new password"
                 />
-                <p className="text-xs text-gray-500 mt-1">Minimum 8 characters</p>
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Minimum 8 characters</p>
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="confirmPassword" className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                   Confirm New Password
                 </label>
                 <input
@@ -170,7 +170,7 @@ export function Settings() {
                   id="confirmPassword"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors"
+                  className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-sm placeholder:text-gray-400 focus:border-brand-300 focus:outline-none focus:ring-2 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                   placeholder="Confirm new password"
                 />
               </div>
@@ -179,7 +179,7 @@ export function Settings() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-primary-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-primary-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full rounded-lg bg-brand-500 px-4 py-3 text-sm font-medium text-white transition hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? 'Updating...' : 'Update Password'}
                 </button>

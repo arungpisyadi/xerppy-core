@@ -1,24 +1,39 @@
+import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
 
 export function Layout() {
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900">
       {/* Sidebar */}
-      <aside className="w-64 bg-gray-900 text-white flex flex-col">
-        <Sidebar />
-      </aside>
+      <div
+        className={`fixed inset-0 z-50 lg:static lg:translate-x-0 ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <aside className="w-[290px] h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800">
+          <Sidebar />
+        </aside>
+      </div>
+
+      {/* Overlay for mobile */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
         {/* Header */}
-        <header className="bg-white border-b border-gray-200">
-          <Header />
-        </header>
+        <Header />
 
         {/* Content */}
-        <main className="flex-1 overflow-auto p-6">
+        <main className="mx-auto w-full max-w-(--breakpoint-2xl) p-4 md:p-6 lg:p-8">
           <Outlet />
         </main>
       </div>

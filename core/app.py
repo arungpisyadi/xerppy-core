@@ -12,8 +12,10 @@ import os
 from importlib.metadata import entry_points
 from typing import TYPE_CHECKING, Any
 
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
-from flask import Flask, jsonify, render_template_string
+from flask import Flask, jsonify, render_template_string, request
+import jwt
 
 from core.extensions import db, ldap_manager, login_manager, migrate
 
@@ -345,9 +347,102 @@ def _register_blueprints(app: Flask) -> None:
         logout_user()
         return "Logged out successfully"
 
+    # Create API blueprint for JSON endpoints
+    api_bp = Blueprint(
+        "api",
+        __name__,
+        url_prefix="/api",
+    )
+
+    @api_bp.route("/auth/login", methods=["POST"])
+    def api_login() -> tuple[dict[str, Any], int]:
+        """API login endpoint that returns JWT tokens."""
+        from core.models import User
+        
+        data = request.get_json()
+        if not data:
+            return {"success": False, "message": "No data provided"}, 400
+        
+        email = data.get("email")
+        password = data.get("password")
+        
+        if not email or not password:
+            return {"success": False, "message": "Email and password are required"}, 400
+        
+        # Find user by email
+        user = User.query.filter_by(email=email).first()
+        
+        if not user or not user.check_password(password):
+            return {"success": False, "message": "Invalid email or password"}, 401
+        
+        # Generate tokens
+        secret_key = app.config.get("SECRET_KEY") or "dev-secret-key-change-in-production"
+        
+        # Access token (expires in 1 hour)
+        access_payload = {
+            "user_id": user.id,
+            "email": user.email,
+            "exp": datetime.utcnow() + timedelta(hours=1),
+            "type": "access",
+        }
+        access_token = jwt.encode(access_payload, secret_key, algorithm="HS256")
+        
+        # Refresh token (expires in 7 days)
+        refresh_payload = {
+            "user_id": user.id,
+            "email": user.email,
+            "exp": datetime.utcnow() + timedelta(days=7),
+            "type": "refresh",
+        }
+        refresh_token = jwt.encode(refresh_payload, secret_key, algorithm="HS256")
+        
+        return {
+            "success": True,
+            "accessToken": access_token,
+            "refreshToken": refresh_token,
+        }, 200
+
+    @api_bp.route("/auth/logout", methods=["POST"])
+    def api_logout() -> tuple[dict[str, Any], int]:
+        """API logout endpoint."""
+        return {"success": True, "message": "Logged out successfully"}, 200
+
+    @api_bp.route("/auth/refresh", methods=["POST"])
+    def api_refresh() -> tuple[dict[str, Any], int]:
+        """Refresh access token endpoint."""
+        data = request.get_json()
+        if not data or not data.get("refreshToken"):
+            return {"success": False, "message": "Refresh token required"}, 400
+        
+        try:
+            secret_key = app.config.get("SECRET_KEY") or "dev-secret-key-change-in-production"
+            payload = jwt.decode(data["refreshToken"], secret_key, algorithms=["HS256"])
+            
+            if payload.get("type") != "refresh":
+                return {"success": False, "message": "Invalid token type"}, 401
+            
+            # Generate new access token
+            access_payload = {
+                "user_id": payload["user_id"],
+                "email": payload["email"],
+                "exp": datetime.utcnow() + timedelta(hours=1),
+                "type": "access",
+            }
+            access_token = jwt.encode(access_payload, secret_key, algorithm="HS256")
+            
+            return {
+                "success": True,
+                "accessToken": access_token,
+            }, 200
+        except jwt.ExpiredSignatureError:
+            return {"success": False, "message": "Token expired"}, 401
+        except jwt.InvalidTokenError:
+            return {"success": False, "message": "Invalid token"}, 401
+
     # Register blueprints with the app
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(api_bp)
 
 
 def _register_error_handlers(app: Flask) -> None:

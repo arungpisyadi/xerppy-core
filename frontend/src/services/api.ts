@@ -84,12 +84,17 @@ api.interceptors.response.use(
 // Auth API
 export const authApi = {
   login: async (credentials: LoginCredentials): Promise<ApiResponse<AuthTokens>> => {
-    const response = await api.post('/auth/login', credentials)
-    if (response.data.accessToken) {
-      localStorage.setItem('accessToken', response.data.accessToken)
-      localStorage.setItem('refreshToken', response.data.refreshToken)
+    const response = await api.post<AuthTokens>('/auth/login', credentials)
+    const authData: AuthTokens = {
+      accessToken: response.data.accessToken,
+      refreshToken: response.data.refreshToken,
     }
-    return response.data
+    localStorage.setItem('accessToken', authData.accessToken)
+    localStorage.setItem('refreshToken', authData.refreshToken)
+    return {
+      success: true,
+      data: authData,
+    }
   },
 
   logout: async (): Promise<void> => {

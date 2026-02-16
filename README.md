@@ -150,6 +150,11 @@ xerppy-core/
    npm run dev
    ```
 
+   for type checking
+   ```
+   npx tsc --noEmit
+   ```
+
    Terminal 2 (Backend):
    ```bash
    flask run
