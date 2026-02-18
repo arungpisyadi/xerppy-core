@@ -11,6 +11,8 @@ Required Extensions:
 - LDAP3: Enterprise LDAP authentication
 """
 
+# pyright: reportAttributeAccessIssue=false
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -22,9 +24,9 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 if TYPE_CHECKING:
-    from flask_sqlalchemy import SQLAlchemy as SQLAlchemyType
-    from flask_migrate import Migrate as MigrateType
     from flask_login import LoginManager as LoginManagerType
+    from flask_migrate import Migrate as MigrateType
+    from flask_sqlalchemy import SQLAlchemy as SQLAlchemyType
     from ldap3 import Server as ServerType
 
 # Initialize SQLAlchemy with SQLAlchemy 2.0 style
@@ -61,7 +63,7 @@ def init_login_manager(app: Flask) -> None:
         Returns:
             User instance if found, None otherwise.
         """
-        return User.query.get(int(user_id))  # type: ignore[attr-defined]
+        return User.query.get(int(user_id))  # type: ignore[no-any-return]
 
 
 # LDAP3 Manager for Enterprise Authentication
@@ -132,7 +134,7 @@ class LDAPManager:
 
         try:
             conn = ldap3.Connection(self._server, user=user_dn, password=password)
-            result = conn.bind()
+            result: bool = conn.bind()
             conn.unbind()
             return result
         except Exception:

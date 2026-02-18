@@ -14,7 +14,6 @@ from core.app import create_app
 from core.extensions import db
 from core.models import User, seed_admin
 
-
 # Create Flask app instance
 app = create_app()
 
@@ -31,10 +30,10 @@ def seed_command() -> None:
         admin = seed_admin()
         if admin:
             click.echo(
-                f"✓ Admin user created successfully!\n"
-                f"  Email: admin@xerppy.local\n"
-                f"  Password: xerppy123\n"
-                f"  Role: admin"
+                "✓ Admin user created successfully!\n"
+                "  Email: admin@xerppy.local\n"
+                "  Password: xerppy123\n"
+                "  Role: admin"
             )
         else:
             click.echo("✗ Admin user already exists or database is not empty.")
@@ -219,7 +218,7 @@ if __name__ == "__main__":
     # This allows running: python manage.py flask <command>
     # Or simply: flask <command> (when manage.py is in the project root)
     from flask.cli import main as flask_main
-    
+
     # Check if we should show help or run a command
     if len(sys.argv) > 1:
         sys.argv[0] = "flask"

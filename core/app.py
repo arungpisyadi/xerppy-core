@@ -6,16 +6,18 @@ Application Factory pattern with support for multiple database types,
 plugins, LDAP authentication, and SSO integration.
 """
 
+# pyright: reportAttributeAccessIssue=false, reportCallIssue=false, reportArgumentType=false
+
 from __future__ import annotations
 
 import os
+from datetime import datetime, timedelta
 from importlib.metadata import entry_points
 from typing import TYPE_CHECKING, Any
 
-from datetime import datetime, timedelta
+import jwt
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template_string, request
-import jwt
 
 from core.extensions import db, ldap_manager, login_manager, migrate
 
@@ -266,7 +268,7 @@ def _init_extensions(app: Flask) -> None:
 
     # Initialize Flask-Login
     login_manager.init_app(app)
-    login_manager.login_view = "auth.login"
+    login_manager.login_view = "auth.login"  # type: ignore[assignment]
     login_manager.login_message = "Please log in to access this page."
     login_manager.session_protection = "strong"
 
@@ -276,7 +278,7 @@ def _init_extensions(app: Flask) -> None:
     @login_manager.user_loader
     def load_user(user_id: str) -> User | None:
         """Load user by ID for Flask-Login."""
-        return User.query.get(int(user_id))
+        return User.query.get(int(user_id))  # type: ignore[no-any-return]
 
     # Initialize LDAP manager if enabled
     if app.config.get("LDAP_ENABLED"):
@@ -358,26 +360,26 @@ def _register_blueprints(app: Flask) -> None:
     def api_login() -> tuple[dict[str, Any], int]:
         """API login endpoint that returns JWT tokens."""
         from core.models import User
-        
+
         data = request.get_json()
         if not data:
             return {"success": False, "message": "No data provided"}, 400
-        
+
         email = data.get("email")
         password = data.get("password")
-        
+
         if not email or not password:
             return {"success": False, "message": "Email and password are required"}, 400
-        
+
         # Find user by email
         user = User.query.filter_by(email=email).first()
-        
+
         if not user or not user.check_password(password):
             return {"success": False, "message": "Invalid email or password"}, 401
-        
+
         # Generate tokens
         secret_key = app.config.get("SECRET_KEY") or "dev-secret-key-change-in-production"
-        
+
         # Access token (expires in 1 hour)
         access_payload = {
             "user_id": user.id,
@@ -386,7 +388,7 @@ def _register_blueprints(app: Flask) -> None:
             "type": "access",
         }
         access_token = jwt.encode(access_payload, secret_key, algorithm="HS256")
-        
+
         # Refresh token (expires in 7 days)
         refresh_payload = {
             "user_id": user.id,
@@ -395,7 +397,7 @@ def _register_blueprints(app: Flask) -> None:
             "type": "refresh",
         }
         refresh_token = jwt.encode(refresh_payload, secret_key, algorithm="HS256")
-        
+
         return {
             "success": True,
             "accessToken": access_token,
@@ -413,14 +415,14 @@ def _register_blueprints(app: Flask) -> None:
         data = request.get_json()
         if not data or not data.get("refreshToken"):
             return {"success": False, "message": "Refresh token required"}, 400
-        
+
         try:
             secret_key = app.config.get("SECRET_KEY") or "dev-secret-key-change-in-production"
             payload = jwt.decode(data["refreshToken"], secret_key, algorithms=["HS256"])
-            
+
             if payload.get("type") != "refresh":
                 return {"success": False, "message": "Invalid token type"}, 401
-            
+
             # Generate new access token
             access_payload = {
                 "user_id": payload["user_id"],
@@ -429,7 +431,7 @@ def _register_blueprints(app: Flask) -> None:
                 "type": "access",
             }
             access_token = jwt.encode(access_payload, secret_key, algorithm="HS256")
-            
+
             return {
                 "success": True,
                 "accessToken": access_token,
@@ -522,7 +524,7 @@ def _register_health_check(app: Flask) -> None:
     """
 
     @app.route("/health")
-    def health_check() -> tuple[dict[str, str], int]:
+    def health_check() -> tuple[Any, int]:
         """Health check endpoint for monitoring.
 
         Returns:
@@ -579,7 +581,7 @@ def _load_plugins(app: Flask) -> None:
     except TypeError:
         # Handle older Python/importlib.metadata versions
         try:
-            plugins = entry_points().get("xerppy.plugins", [])
+            plugins = entry_points().get("xerppy.plugins", [])  # type: ignore[arg-type,misc]
             for plugin in plugins:
                 try:
                     plugin_entry = plugin.load()

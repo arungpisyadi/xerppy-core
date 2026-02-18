@@ -9,12 +9,12 @@ from __future__ import annotations
 
 import logging
 from importlib.metadata import EntryPoint, entry_points
-from typing import TYPE_CHECKING, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 from flask import Flask
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    pass
 
 
 # Configure logging
@@ -36,7 +36,7 @@ class XerppyPlugin(Protocol):
     name: str
     version: str
 
-    def register_blueprints(self, app: Flask) -> list[Flask]:
+    def register_blueprints(self, app: Flask) -> list[Any]:
         """Register Flask blueprints with the application.
 
         Args:
@@ -112,18 +112,18 @@ class PluginManager:
                 self._discovered_plugins = list(eps.select())
             else:
                 # Older Python versions
-                self._discovered_plugins = list(eps)  # type: ignore[arg-type]
+                self._discovered_plugins = list(eps)
             logger.info(f"Discovered {len(self._discovered_plugins)} plugin(s)")
         except TypeError:
             # Handle case where entry_points() is called without arguments
             # and doesn't support group parameter (older Python versions)
             try:
-                eps = entry_points()
+                eps = entry_points()  # type: ignore[call-arg, assignment]
                 if isinstance(eps, dict):
                     plugins = eps.get(self.ENTRY_POINT_GROUP, [])
                 else:
                     # For select-based entry points that don't have group
-                    plugins = list(eps)  # type: ignore[union-attr]
+                    plugins = list(eps)
                 self._discovered_plugins = list(plugins)
                 logger.info(f"Discovered {len(self._discovered_plugins)} plugin(s)")
             except Exception as e:

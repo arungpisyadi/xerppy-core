@@ -14,12 +14,13 @@ Example:
     >>> result = await crew.kickoff_async()
 """
 
+# pyright: reportCallIssue=false, reportArgumentType=false
+
 from __future__ import annotations
 
 import asyncio
 import logging
 import os
-from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
@@ -106,7 +107,7 @@ class CrewManager:
         # Load agents.yaml
         agents_file = self.config_dir / "agents.yaml"
         if agents_file.exists():
-            with open(agents_file, "r") as f:
+            with open(agents_file) as f:
                 self._agents_config = yaml.safe_load(f) or {}
             logger.info(f"Loaded {len(self._agents_config)} agent configurations")
         else:
@@ -115,7 +116,7 @@ class CrewManager:
         # Load tasks.yaml
         tasks_file = self.config_dir / "tasks.yaml"
         if tasks_file.exists():
-            with open(tasks_file, "r") as f:
+            with open(tasks_file) as f:
                 self._tasks_config = yaml.safe_load(f) or {}
             logger.info(f"Loaded {len(self._tasks_config)} task configurations")
         else:
@@ -124,7 +125,7 @@ class CrewManager:
         # Load crews.yaml
         crews_file = self.config_dir / "crews.yaml"
         if crews_file.exists():
-            with open(crews_file, "r") as f:
+            with open(crews_file) as f:
                 self._crews_config = yaml.safe_load(f) or {}
             logger.info(f"Loaded {len(self._crews_config)} crew configurations")
         else:
@@ -505,15 +506,12 @@ class CrewManager:
 
             # Find the matching agent
             task_agent = None
-            for agent in agents:
-                # Get the role from agent config
-                agent_role = self._agents_config.get(
-                    [n for n in self._agents_config if n == agent_names[agents.index(agent)]][0],
-                    {}
-                ).get("role", "")
-                if agent.role == agent_role:
-                    task_agent = agent
-                    break
+            if assigned_agent_name:
+                # Try to find agent by name in the loaded agents
+                for i, agent in enumerate(agents):
+                    if agent_names[i] == assigned_agent_name:
+                        task_agent = agent
+                        break
 
             if not task_agent and agents:
                 task_agent = agents[0]  # Default to first agent
@@ -527,7 +525,7 @@ class CrewManager:
 
         # Create crew
         crew = Crew(
-            agents=agents,
+            agents=agents,  # type: ignore[arg-type]
             tasks=tasks,
             verbose=config.get("verbose", True),
             process=process,

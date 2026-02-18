@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING
 from flask import Blueprint, Flask, render_template_string
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    pass
 
 
 class SamplePlugin:

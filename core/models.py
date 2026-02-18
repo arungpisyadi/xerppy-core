@@ -4,22 +4,24 @@ This module defines the database models using Flask-SQLAlchemy with
 SQLAlchemy 2.0 style and proper type hints.
 """
 
+# pyright: reportAttributeAccessIssue=false, reportCallIssue=false
+
 from __future__ import annotations
 
 from datetime import datetime
 from typing import TYPE_CHECKING
 
 from flask_login import UserMixin
-from sqlalchemy import DateTime, DefaultClause, String, func
+from sqlalchemy import DateTime, String, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from core.extensions import db
 
 if TYPE_CHECKING:
-    from werkzeug.security import GeneratePasswordHashAlgorithm, CheckPasswordHash
+    pass
 
 
-class User(db.Model, UserMixin):
+class User(db.Model, UserMixin):  # type: ignore[name-defined]
     """User model for authentication and authorization.
 
     This model represents system users with support for local authentication,

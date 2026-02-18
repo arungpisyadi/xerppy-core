@@ -7,7 +7,6 @@ AI agents to query ERP data while maintaining security and audit trails.
 from __future__ import annotations
 
 import logging
-import os
 import re
 from typing import Any
 
@@ -126,14 +125,12 @@ class DatabaseQueryTool(BaseTool):
             logger.info(f"Executing database query: {validated_query[:200]}...")
 
             # Import here to avoid circular imports
-            from flask import current_app
             from sqlalchemy import text
-            from sqlalchemy.orm import Session
 
             from core.extensions import db
 
             # Get the database session
-            session: Session = db.session
+            session = db.session
 
             # Execute the query using SQLAlchemy
             result = session.execute(text(validated_query))
